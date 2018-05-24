@@ -10,15 +10,14 @@ using namespace std;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	ofstream out("color_histogram.txt", ios::trunc);
+	ofstream out("RGB_histogram.txt", ios::trunc);
 	CString image_name[3] = { "AR0001_1m.jpg", "n01613177_60.JPEG", "n01613177_104.JPEG" };
-	//string image_name[3] = {"AR0001_1m.jpg", "n01613177_60.JPEG", "n01613177_104.JPEG"};
 
 
 	for (int image_i = 0; image_i < 3; image_i++)
 	{
 		CImage image;
-		int Color_Hist[SIZE][SIZE][SIZE] = { 0 };
+		int RGB_Hist[SIZE][SIZE][SIZE] = { 0 };
 
 		int iHeight, iWidth;
 		BYTE byteR, byteG, byteB;
@@ -45,7 +44,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 				//printf("%Pixel at (%d,%d) is: R=0x%x,G=0x%x,B=0x%x\n",iRow, iCol, byteR, byteG, byteB);		
 
-				Color_Hist[byteR / (256 / SIZE)][byteG / (256 / SIZE)][byteB / (256 / SIZE)]++;
+				RGB_Hist[byteR / (256 / SIZE)][byteG / (256 / SIZE)][byteB / (256 / SIZE)]++;
 			}
 
 		for (int i = 0; i < SIZE; i++)
@@ -53,7 +52,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			for (int j = 0; j < SIZE; j++)
 				for (int k = 0; k < SIZE; k++)
 				{
-					out << Color_Hist[i][j][k] << " ";
+					out << RGB_Hist[i][j][k] << " ";
 				}
 			//out << endl;
 		}
