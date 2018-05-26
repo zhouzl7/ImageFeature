@@ -43,8 +43,8 @@ int _tmain(int argc, _TCHAR* argv[])
 				byteB = GetBValue(colorref);
 
 				//printf("%Pixel at (%d,%d) is: R=0x%x,G=0x%x,B=0x%x\n",iRow, iCol, byteR, byteG, byteB);		
-
-				RGB_Hist[byteR / (256 / SIZE)][byteG / (256 / SIZE)][byteB / (256 / SIZE)]++;
+				double size = 256 * 1.0 / SIZE + 0.5;
+				RGB_Hist[byteR / (int)size][byteG / (int)size][byteB / (int)size]++;
 			}
 
 		for (int i = 0; i < SIZE; i++)
