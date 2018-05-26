@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string>
 using namespace std;
+#define BLOCK 4  //分块BLOCK*BLOCK
 
 //calculate 灰度值
 double RGBtoGray(BYTE R, BYTE G, BYTE B)
@@ -54,10 +55,10 @@ int _tmain(int argc, _TCHAR* argv[])
 		iWidth = image.GetWidth();
 		double **GrayArray = new double*[iHeight];
 		int **LBP = new int*[iHeight];
-		int LBP_Hist[4][256] = { 0 };//LBP直方图
+		int LBP_Hist[BLOCK][BLOCK][256] = { 0 };//LBP直方图
 		/*
-		将图片划分为2*2的4个方块，统计每个方块的LBP直方图，LBP∈[0, 255]
-		所以，特征向量共有4*256维
+		将图片划分为BLOCK*BLOCK个方块，统计每个方块的LBP直方图，LBP∈[0, 255]
+		所以，特征向量共有BLOCK*BLOCK*256维
 		*/
 		for (int i = 0; i < iHeight; i++)
 		{
@@ -86,7 +87,10 @@ int _tmain(int argc, _TCHAR* argv[])
 			for (int j = 1; j < iWidth - 1; j++)
 			{
 				LBP[i][j] = LBP_value(GrayArray, i, j);
-				if (i < iHeight / 2)
+				double size1 = iHeight * 1.0 / BLOCK + 0.5;
+				double size2 = iWidth * 1.0 / BLOCK + 0.5;
+				LBP_Hist[i / (int)size1][j / (int)size2][LBP[i][j]]++;
+				/*if (i < iHeight / 2)
 				{
 					if (j < iWidth / 2)
 						LBP_Hist[0][LBP[i][j]]++;
@@ -99,15 +103,18 @@ int _tmain(int argc, _TCHAR* argv[])
 						LBP_Hist[2][LBP[i][j]]++;
 					else
 						LBP_Hist[3][LBP[i][j]]++;
-				}
+				}*/
 			}
 
 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < BLOCK; i++)
 		{
-			for (int j = 0; j < 256; j++)
-				out << LBP_Hist[i][j] << " ";
-			out << endl;
+			for (int k = 0; k < BLOCK; k++)
+			{
+				for (int j = 0; j < 256; j++)
+					out << LBP_Hist[i][k][j] << " ";
+				out << endl;
+			}
 		}
 		out << endl << endl;
 		cout << "finish." << endl;
