@@ -5,8 +5,28 @@
 #include "atlimage.h"
 #include <fstream>
 #include <string>
+#include <vector>
+#include <iostream>
 using namespace std;
 #define BLOCK 4  //分块BLOCK*BLOCK
+
+
+void readImage(string filename, vector<string> &Array)
+{
+	ifstream inFile(filename);
+	if (!inFile.is_open())
+	{
+		fprintf(stderr, "%s not exist\n", filename.c_str());
+		return;
+	}
+	string str;
+	while (getline(inFile, str))
+	{
+		Array.push_back(str);
+	}
+	inFile.close();
+}
+
 
 //calculate 灰度值
 double RGBtoGray(BYTE R, BYTE G, BYTE B)
@@ -38,11 +58,21 @@ int LBP_value(double **GrayArray, int i, int j)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	string image_Filename = "imagelist.txt";
+	vector<string> imageArray;  //所有的imagename
+
 	ofstream out("LBP_feature.txt", ios::trunc);
-	CString image_name[3] = { "AR0001_1m.jpg", "n01613177_60.JPEG", "n01613177_104.JPEG" };
+	readImage(image_Filename, imageArray);
+	CString image_name[6000];
+	for (int i = 0; i < imageArray.size(); i++)
+	{
+		string a = string("image\\") + imageArray[i];
+		image_name[i] = a.c_str();
+	}
+	out << "tech nmos<< polysilicon >>rect";
 
 
-	for (int image_i = 0; image_i < 3; image_i++)
+	for (int image_i = 0; image_i < imageArray.size(); image_i++)
 	{
 		CImage image;
 
@@ -112,11 +142,13 @@ int _tmain(int argc, _TCHAR* argv[])
 			for (int k = 0; k < BLOCK; k++)
 			{
 				for (int j = 0; j < 256; j++)
-					out << LBP_Hist[i][k][j] << " ";
-				out << endl;
+					out << " " << LBP_Hist[i][k][j];
 			}
 		}
-		out << endl << endl;
+		if (image_i == imageArray.size() - 1)
+			out << "<< end >>";
+		else
+			out << "rect";
 		cout << "finish." << endl;
 
 		image.GetBits();
