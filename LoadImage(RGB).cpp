@@ -5,16 +5,45 @@
 #include "atlimage.h"
 #include <fstream>
 #include <string>
+#include <vector>
+#include <iostream>
 using namespace std;
-#define SIZE 4 
+#define SIZE 2 
+
+
+void readImage(string filename, vector<string> &Array)
+{
+	ifstream inFile(filename);
+	if (!inFile.is_open())
+	{
+		fprintf(stderr, "%s not exist\n", filename.c_str());
+		return;
+	}
+	string str;
+	while (getline(inFile, str))
+	{
+		Array.push_back(str);
+	}
+	inFile.close();
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	string image_Filename = "imagelist.txt";
+	vector<string> imageArray;  //ËùÓÐµÄimagename
+
 	ofstream out("RGB_histogram.txt", ios::trunc);
-	CString image_name[3] = { "AR0001_1m.jpg", "n01613177_60.JPEG", "n01613177_104.JPEG" };
+	readImage(image_Filename, imageArray);
+	CString image_name[6000];
+	for (int i = 0; i < imageArray.size(); i++)
+	{
+		string a = string("image\\") + imageArray[i];
+		image_name[i] = a.c_str();
+	}
+	out << "tech nmos<< polysilicon >>rect";
 
 
-	for (int image_i = 0; image_i < 3; image_i++)
+	for (int image_i = 0; image_i < imageArray.size(); image_i++)
 	{
 		CImage image;
 		int RGB_Hist[SIZE][SIZE][SIZE] = { 0 };
@@ -52,11 +81,13 @@ int _tmain(int argc, _TCHAR* argv[])
 			for (int j = 0; j < SIZE; j++)
 				for (int k = 0; k < SIZE; k++)
 				{
-					out << RGB_Hist[i][j][k] << " ";
+					out << " " << RGB_Hist[i][j][k];
 				}
-			//out << endl;
 		}
-		out << endl;
+		if (image_i == imageArray.size() - 1)
+			out << "<< end >>";
+		else
+			out << "rect";
 		cout << "finish." << endl;
 		image.GetBits();
 
