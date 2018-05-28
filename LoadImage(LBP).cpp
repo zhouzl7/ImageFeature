@@ -9,6 +9,7 @@
 #include <iostream>
 using namespace std;
 #define BLOCK 4  //分块BLOCK*BLOCK
+#define SIZE 4 //LBP值划分区间个数
 
 
 void readImage(string filename, vector<string> &Array)
@@ -85,7 +86,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		iWidth = image.GetWidth();
 		double **GrayArray = new double*[iHeight];
 		int **LBP = new int*[iHeight];
-		int LBP_Hist[BLOCK][BLOCK][256] = { 0 };//LBP直方图
+		int LBP_Hist[BLOCK][BLOCK][SIZE] = { 0 };//LBP直方图
 		/*
 		将图片划分为BLOCK*BLOCK个方块，统计每个方块的LBP直方图，LBP∈[0, 255]
 		所以，特征向量共有BLOCK*BLOCK*256维
@@ -119,7 +120,8 @@ int _tmain(int argc, _TCHAR* argv[])
 				LBP[i][j] = LBP_value(GrayArray, i, j);
 				double size1 = iHeight * 1.0 / BLOCK + 0.5;
 				double size2 = iWidth * 1.0 / BLOCK + 0.5;
-				LBP_Hist[i / (int)size1][j / (int)size2][LBP[i][j]]++;
+				double size3 = 256 * 1.0 / SIZE + 0.5;
+				LBP_Hist[i / (int)size1][j / (int)size2][LBP[i][j] / (int)size3]++;
 				/*if (i < iHeight / 2)
 				{
 					if (j < iWidth / 2)
@@ -141,7 +143,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			for (int k = 0; k < BLOCK; k++)
 			{
-				for (int j = 0; j < 256; j++)
+				for (int j = 0; j < SIZE; j++)
 					out << " " << LBP_Hist[i][k][j];
 			}
 		}
@@ -149,7 +151,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			out << "<< end >>";
 		else
 			out << "rect";
-		cout << "finish." << endl;
+		cout << image_i << endl;
 
 		image.GetBits();
 		image.Destroy();
