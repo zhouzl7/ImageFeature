@@ -191,7 +191,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			out << "<< end >>";
 		else
 			out << "rect";
-		cout << "finish." << endl;
+		cout << image_i << endl;
 		image.GetBits();
 
 		image.Destroy();
